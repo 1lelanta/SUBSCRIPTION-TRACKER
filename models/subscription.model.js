@@ -78,5 +78,9 @@ subscriptionSchema.pre('save',function(next){
         this.status='expired'
     }
     next();
-})
+});
+
+const subscription = mongoose.model('Subscription', subscriptionSchema);
+
+export default subscription;
 

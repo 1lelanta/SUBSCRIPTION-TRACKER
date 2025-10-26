@@ -1,30 +1,32 @@
-import express from 'express'
+import express from 'express';
 import authRouter from './routes/auth.route.js';
 import userRouter from './routes/user.route.js';
 import subscriptionRouter from './routes/subscription.routes.js';
-import dotenv from 'dotenv'
+import dotenv from 'dotenv';
 import connectToDatabase from './database/mongodb.js';
 import errorMiddlewar from './middlewares/error.middleware.js';
 import cookieParser from 'cookie-parser';
 
 dotenv.config();
 
-const PORT = process.env.PORT
+const PORT = process.env.PORT;
 
 const app = express();
 app.use(express.json());
-app.use(express.urlencoded({extended:false}));
-app.use(cookieParser);
+app.use(express.urlencoded({ extended: false }));
+app.use(cookieParser());
 
-app.use('/api/v1/auth',authRouter);
+app.use('/api/v1/auth', authRouter);
 app.use('/api/v1/users', userRouter);
-app.use('/api/v1/subscription',subscriptionRouter);
+app.use('/api/v1/subscription', subscriptionRouter);
 
 app.use(errorMiddlewar);
 
+const startServer = async () => {
+  await connectToDatabase();
+  app.listen(PORT, () => {
+    console.log(`app is running on http://localhost:${PORT}`);
+  });
+};
 
-app.listen(PORT,async()=>{
-    console.log(`app is running on http://localhost/${PORT}`);
-
-    await connectToDatabase();
-})
+startServer();

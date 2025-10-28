@@ -1,4 +1,4 @@
-import arcjet,{shield,detectBot,tokenBucket} from "arcjet";
+import arcjet, {shield,detectBot,tokenBucket} from '@arcjet/node';
 import dotenv from 'dotenv'
 dotenv.config();
 

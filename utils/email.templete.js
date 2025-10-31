@@ -1,101 +1,93 @@
-// utils/emailTemplate.js
+// emailTemplate.js
+import dayjs from "dayjs";
 
-export const EmailTemplates = {
-  // 📅 Reminder Template
-  reminder: {
-    subject: (vars) => `Reminder: ${vars.title} — ${vars.date}`,
-    html: `
-    <html>
-      <body style="font-family:Arial, sans-serif;background:#f6f7fb;padding:20px;">
-        <div style="max-width:600px;margin:auto;background:white;border-radius:10px;padding:20px;">
-          <h2>Reminder: {{title}}</h2>
-          <p>Hi {{name}},</p>
-          <p>This is a reminder for <strong>{{title}}</strong> on <strong>{{date}}</strong> at <strong>{{time}}</strong>.</p>
-          <p>Location: {{location}}</p>
-          <a href="{{actionUrl}}" style="display:inline-block;padding:10px 15px;background:#2563eb;color:white;border-radius:6px;text-decoration:none;">View Details</a>
-          <hr>
-          <p style="font-size:12px;color:#9ca3af;">If you didn’t request this, ignore this email.</p>
-        </div>
-      </body>
-    </html>`,
-    text: `
-Reminder: {{title}} — {{date}}
+/**
+ * Generates an HTML email reminder for subscription renewal.
+ * 
+ * @param {Object} options
+ * @param {string} options.name - The user's name
+ * @param {string} options.planName - The subscription plan name
+ * @param {string|Date} options.renewalDate - The renewal date
+ * @param {number} options.daysLeft - Days left until renewal
+ * @returns {string} - HTML email content
+ */
+export const generateEmailTemplate = ({ name, planName, renewalDate, daysLeft }) => {
+  const formattedDate = dayjs(renewalDate).format("MMMM D, YYYY");
 
-Hi {{name}},
-
-This is a reminder for "{{title}}" on {{date}} at {{time}}.
-Location: {{location}}.
-
-View Details: {{actionUrl}}
-`
-  },
-
-  // 👋 Welcome Template
-  welcome: {
-    subject: (vars) => `Welcome to ${vars.appName}, ${vars.name}!`,
-    html: `
-    <html><body style="font-family:Arial;background:#f2f4f8;padding:20px;">
-      <div style="max-width:600px;margin:auto;background:white;padding:20px;border-radius:10px;">
-        <h1>Welcome, {{name}} 👋</h1>
-        <p>Thanks for joining <strong>{{appName}}</strong>! Please confirm your email below:</p>
-        <a href="{{confirmUrl}}" style="padding:10px 15px;background:#10b981;color:white;border-radius:6px;text-decoration:none;">Confirm Email</a>
+  return `
+  <!DOCTYPE html>
+  <html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Subscription Reminder</title>
+    <style>
+      body {
+        font-family: Arial, Helvetica, sans-serif;
+        background-color: #f4f6f8;
+        margin: 0;
+        padding: 0;
+      }
+      .container {
+        max-width: 600px;
+        background-color: #ffffff;
+        margin: 40px auto;
+        border-radius: 10px;
+        overflow: hidden;
+        box-shadow: 0 4px 10px rgba(0,0,0,0.1);
+      }
+      .header {
+        background-color: #2563eb;
+        color: #fff;
+        text-align: center;
+        padding: 20px;
+      }
+      .content {
+        padding: 25px;
+        color: #333;
+      }
+      h2 {
+        color: #2563eb;
+        margin-bottom: 15px;
+      }
+      p {
+        line-height: 1.6;
+      }
+      .button {
+        display: inline-block;
+        background-color: #2563eb;
+        color: #fff;
+        text-decoration: none;
+        padding: 10px 20px;
+        border-radius: 6px;
+        margin-top: 20px;
+      }
+      .footer {
+        text-align: center;
+        font-size: 13px;
+        color: #888;
+        padding: 15px;
+      }
+    </style>
+  </head>
+  <body>
+    <div class="container">
+      <div class="header">
+        <h1>Subscription Reminder</h1>
       </div>
-    </body></html>`,
-    text: `
-Welcome to {{appName}}, {{name}}!
-Confirm your email: {{confirmUrl}}
-`
-  },
-
-  // 🔐 Password Reset Template
-  resetPassword: {
-    subject: (vars) => `Reset your password — ${vars.appName}`,
-    html: `
-    <html><body style="font-family:Arial;background:#f8fafc;padding:20px;">
-      <div style="max-width:600px;margin:auto;background:white;padding:20px;border-radius:10px;">
-        <h2>Reset your password</h2>
-        <p>Hi {{name}},</p>
-        <p>We received a request to reset the password for your {{appName}} account.</p>
-        <a href="{{resetUrl}}" style="display:inline-block;padding:10px 15px;background:#dc2626;color:white;border-radius:6px;text-decoration:none;">Reset Password</a>
-        <p>This link expires in {{expiresIn}}.</p>
+      <div class="content">
+        <h2>Hello ${name || "Subscriber"},</h2>
+        <p>This is a friendly reminder that your <strong>${planName || "subscription"}</strong> will renew in <strong>${daysLeft}</strong> day${daysLeft === 1 ? "" : "s"}.</p>
+        <p>Your next billing date is <strong>${formattedDate}</strong>.</p>
+        <p>If you wish to make changes or cancel before renewal, please visit your account page.</p>
+        <a href="https://yourwebsite.com/account" class="button">Manage Subscription</a>
       </div>
-    </body></html>`,
-    text: `
-Reset your password for {{appName}}
-
-Hi {{name}},
-Reset link: {{resetUrl}}
-Expires in: {{expiresIn}}
-`
-  },
-
-  // 🔔 Generic Notification Template
-  notification: {
-    subject: (vars) => `${vars.title} — ${vars.appName}`,
-    html: `
-    <html><body style="font-family:Arial;background:#fff;padding:18px;">
-      <div style="max-width:600px;margin:12px auto;padding:18px;border:1px solid #eef2f6;border-radius:8px;">
-        <h3>{{title}}</h3>
-        <p>{{message}}</p>
-        <a href="{{actionUrl}}" style="padding:10px 14px;border-radius:6px;text-decoration:none;background:#2563eb;color:#fff;">View</a>
-        <hr/><p style="font-size:12px;color:#9aa4b2;">Manage your notification settings: {{settingsUrl}}</p>
+      <div class="footer">
+        <p>Thank you for being with us 💙</p>
+        <p>&copy; ${new Date().getFullYear()} Your Company Name</p>
       </div>
-    </body></html>`,
-    text: `
-{{title}}
-
-{{message}}
-
-View: {{actionUrl}}
-Manage: {{settingsUrl}}
-`
-  }
+    </div>
+  </body>
+  </html>
+  `;
 };
-
-// 🧩 Simple renderer to replace {{variables}} in the templates
-export function renderTemplate(template, vars = {}) {
-  return template.replace(/\{\{(\s*[\w.]+\s*)\}\}/g, (_, key) => {
-    const k = key.trim();
-    return vars[k] !== undefined ? vars[k] : '';
-  });
-}

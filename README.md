@@ -60,10 +60,6 @@ Make sure MongoDB Atlas allows connections from your deployment IP.
 
 Test your API endpoints using Postman, curl, or any HTTP client.
 
-
-This is **one full README file**, fully formatted, ready to copy into `README.md`.  
-
-No parts, no splitting — everything is in **one file** exactly as it should be.
 Live Demo
 https://subscription-tracker-4.onrender.com/
 
